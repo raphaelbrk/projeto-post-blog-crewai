@@ -1,0 +1,316 @@
+{
+  "info": {
+    "_postman_id": "b3c5d1a2-f8e0-4e3a-b0f2-ec5a8f6e2b1d",
+    "name": "Documentação de Requisitos - Azure OpenAI",
+    "description": "Collection para gerar documentação de requisitos detalhada usando a API do Azure OpenAI",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Documentação de Requisitos",
+      "item": [
+        {
+          "name": "Gerar Documento de Requisitos",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "api-key",
+                "value": "{{api-key}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"messages\": [\n        {\n            \"role\": \"system\",\n            \"content\": \"Você é um especialista em análise de requisitos e documentação de software. Você deve gerar um documento de requisitos detalhado para um sistema, seguindo as melhores práticas de engenharia de software.\"\n        },\n        {\n            \"role\": \"user\",\n            \"content\": \"Preciso de um documento de requisitos detalhado para o sistema {{nome_sistema}}. O sistema deve atender aos seguintes pontos importantes: {{pontos_importantes}}.\"\n        }\n    ],\n    \"temperature\": 0.7,\n    \"top_p\": 0.95,\n    \"max_tokens\": 4000,\n    \"stream\": false\n}"
+            },
+            "url": {
+              "raw": "{{endpoint}}/{{proxy-path}}/deployments/{{deployment-id}}/chat/completions?api-version={{api-version}}",
+              "host": [
+                "{{endpoint}}"
+              ],
+              "path": [
+                "{{proxy-path}}",
+                "deployments",
+                "{{deployment-id}}",
+                "chat",
+                "completions"
+              ],
+              "query": [
+                {
+                  "key": "api-version",
+                  "value": "{{api-version}}"
+                }
+              ]
+            },
+            "description": "Gera um documento de requisitos detalhado com base nos pontos importantes do sistema."
+          },
+          "response": []
+        },
+        {
+          "name": "Gerar Casos de Uso",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "api-key",
+                "value": "{{api-key}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"messages\": [\n        {\n            \"role\": \"system\",\n            \"content\": \"Você é um especialista em análise de requisitos e documentação de software. Você deve gerar casos de uso detalhados para um sistema, seguindo as melhores práticas de engenharia de software.\"\n        },\n        {\n            \"role\": \"user\",\n            \"content\": \"Baseado no seguinte documento de requisitos, gere casos de uso detalhados para o sistema {{nome_sistema}}:\\n\\n{{documento_requisitos}}\"\n        }\n    ],\n    \"temperature\": 0.7,\n    \"top_p\": 0.95,\n    \"max_tokens\": 4000,\n    \"stream\": false\n}"
+            },
+            "url": {
+              "raw": "{{endpoint}}/{{proxy-path}}/deployments/{{deployment-id}}/chat/completions?api-version={{api-version}}",
+              "host": [
+                "{{endpoint}}"
+              ],
+              "path": [
+                "{{proxy-path}}",
+                "deployments",
+                "{{deployment-id}}",
+                "chat",
+                "completions"
+              ],
+              "query": [
+                {
+                  "key": "api-version",
+                  "value": "{{api-version}}"
+                }
+              ]
+            },
+            "description": "Gera casos de uso detalhados com base no documento de requisitos."
+          },
+          "response": []
+        },
+        {
+          "name": "Gerar Cenários de Teste",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "api-key",
+                "value": "{{api-key}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"messages\": [\n        {\n            \"role\": \"system\",\n            \"content\": \"Você é um especialista em testes de software. Você deve gerar cenários de teste detalhados para um sistema, seguindo as melhores práticas de engenharia de software.\"\n        },\n        {\n            \"role\": \"user\",\n            \"content\": \"Baseado nos seguintes casos de uso e requisitos, gere cenários de teste detalhados para o sistema {{nome_sistema}}:\\n\\n{{casos_de_uso}}\\n\\n{{documento_requisitos}}\"\n        }\n    ],\n    \"temperature\": 0.7,\n    \"top_p\": 0.95,\n    \"max_tokens\": 4000,\n    \"stream\": false\n}"
+            },
+            "url": {
+              "raw": "{{endpoint}}/{{proxy-path}}/deployments/{{deployment-id}}/chat/completions?api-version={{api-version}}",
+              "host": [
+                "{{endpoint}}"
+              ],
+              "path": [
+                "{{proxy-path}}",
+                "deployments",
+                "{{deployment-id}}",
+                "chat",
+                "completions"
+              ],
+              "query": [
+                {
+                  "key": "api-version",
+                  "value": "{{api-version}}"
+                }
+              ]
+            },
+            "description": "Gera cenários de teste detalhados com base nos casos de uso e requisitos."
+          },
+          "response": []
+        },
+        {
+          "name": "Identificar Equipes e Aplicações Envolvidas",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "api-key",
+                "value": "{{api-key}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"messages\": [\n        {\n            \"role\": \"system\",\n            \"content\": \"Você é um especialista em análise organizacional e mapeamento de sistemas. Você deve identificar todas as equipes e aplicações envolvidas em um projeto de software.\"\n        },\n        {\n            \"role\": \"user\",\n            \"content\": \"Baseado no seguinte documento de requisitos e casos de uso, identifique todas as equipes e aplicações que estarão envolvidas no sistema {{nome_sistema}}:\\n\\n{{documento_requisitos}}\\n\\n{{casos_de_uso}}\"\n        }\n    ],\n    \"temperature\": 0.7,\n    \"top_p\": 0.95,\n    \"max_tokens\": 4000,\n    \"stream\": false\n}"
+            },
+            "url": {
+              "raw": "{{endpoint}}/{{proxy-path}}/deployments/{{deployment-id}}/chat/completions?api-version={{api-version}}",
+              "host": [
+                "{{endpoint}}"
+              ],
+              "path": [
+                "{{proxy-path}}",
+                "deployments",
+                "{{deployment-id}}",
+                "chat",
+                "completions"
+              ],
+              "query": [
+                {
+                  "key": "api-version",
+                  "value": "{{api-version}}"
+                }
+              ]
+            },
+            "description": "Identifica todas as equipes e aplicações envolvidas no sistema."
+          },
+          "response": []
+        },
+        {
+          "name": "Gerar Documento Completo",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "api-key",
+                "value": "{{api-key}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"messages\": [\n        {\n            \"role\": \"system\",\n            \"content\": \"Você é um especialista em documentação técnica e de requisitos de software. Você deve consolidar todas as informações em um documento completo e coeso.\"\n        },\n        {\n            \"role\": \"user\",\n            \"content\": \"Consolide as seguintes informações em um documento completo de requisitos para o sistema {{nome_sistema}}:\\n\\nREQUISITOS:\\n{{documento_requisitos}}\\n\\nCASOS DE USO:\\n{{casos_de_uso}}\\n\\nCENÁRIOS DE TESTE:\\n{{cenarios_teste}}\\n\\nEQUIPES E APLICAÇÕES ENVOLVIDAS:\\n{{equipes_aplicacoes}}\"\n        }\n    ],\n    \"temperature\": 0.7,\n    \"top_p\": 0.95,\n    \"max_tokens\": 4000,\n    \"stream\": false\n}"
+            },
+            "url": {
+              "raw": "{{endpoint}}/{{proxy-path}}/deployments/{{deployment-id}}/chat/completions?api-version={{api-version}}",
+              "host": [
+                "{{endpoint}}"
+              ],
+              "path": [
+                "{{proxy-path}}",
+                "deployments",
+                "{{deployment-id}}",
+                "chat",
+                "completions"
+              ],
+              "query": [
+                {
+                  "key": "api-version",
+                  "value": "{{api-version}}"
+                }
+              ]
+            },
+            "description": "Consolida todas as informações em um documento completo de requisitos."
+          },
+          "response": []
+        }
+      ],
+      "description": "Conjunto de requisições para gerar documentação de requisitos detalhada."
+    },
+    {
+      "name": "CURL Examples",
+      "item": [
+        {
+          "name": "CURL - Gerar Documento de Requisitos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": ""
+            },
+            "description": "```bash\ncurl -X POST \"{{endpoint}}/{{proxy-path}}/deployments/{{deployment-id}}/chat/completions?api-version={{api-version}}\" \\\n  -H \"Content-Type: application/json\" \\\n  -H \"api-key: {{api-key}}\" \\\n  -d '{\n    \"messages\": [\n        {\n            \"role\": \"system\",\n            \"content\": \"Você é um especialista em análise de requisitos e documentação de software. Você deve gerar um documento de requisitos detalhado para um sistema, seguindo as melhores práticas de engenharia de software.\"\n        },\n        {\n            \"role\": \"user\",\n            \"content\": \"Preciso de um documento de requisitos detalhado para o sistema {{nome_sistema}}. O sistema deve atender aos seguintes pontos importantes: {{pontos_importantes}}.\"\n        }\n    ],\n    \"temperature\": 0.7,\n    \"top_p\": 0.95,\n    \"max_tokens\": 4000,\n    \"stream\": false\n}'\n```"
+          },
+          "response": []
+        },
+        {
+          "name": "CURL - Gerar Casos de Uso",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": ""
+            },
+            "description": "```bash\ncurl -X POST \"{{endpoint}}/{{proxy-path}}/deployments/{{deployment-id}}/chat/completions?api-version={{api-version}}\" \\\n  -H \"Content-Type: application/json\" \\\n  -H \"api-key: {{api-key}}\" \\\n  -d '{\n    \"messages\": [\n        {\n            \"role\": \"system\",\n            \"content\": \"Você é um especialista em análise de requisitos e documentação de software. Você deve gerar casos de uso detalhados para um sistema, seguindo as melhores práticas de engenharia de software.\"\n        },\n        {\n            \"role\": \"user\",\n            \"content\": \"Baseado no seguinte documento de requisitos, gere casos de uso detalhados para o sistema {{nome_sistema}}:\\n\\n{{documento_requisitos}}\"\n        }\n    ],\n    \"temperature\": 0.7,\n    \"top_p\": 0.95,\n    \"max_tokens\": 4000,\n    \"stream\": false\n}'\n```"
+          },
+          "response": []
+        },
+        {
+          "name": "CURL - Gerar Cenários de Teste",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": ""
+            },
+            "description": "```bash\ncurl -X POST \"{{endpoint}}/{{proxy-path}}/deployments/{{deployment-id}}/chat/completions?api-version={{api-version}}\" \\\n  -H \"Content-Type: application/json\" \\\n  -H \"api-key: {{api-key}}\" \\\n  -d '{\n    \"messages\": [\n        {\n            \"role\": \"system\",\n            \"content\": \"Você é um especialista em testes de software. Você deve gerar cenários de teste detalhados para um sistema, seguindo as melhores práticas de engenharia de software.\"\n        },\n        {\n            \"role\": \"user\",\n            \"content\": \"Baseado nos seguintes casos de uso e requisitos, gere cenários de teste detalhados para o sistema {{nome_sistema}}:\\n\\n{{casos_de_uso}}\\n\\n{{documento_requisitos}}\"\n        }\n    ],\n    \"temperature\": 0.7,\n    \"top_p\": 0.95,\n    \"max_tokens\": 4000,\n    \"stream\": false\n}'\n```"
+          },
+          "response": []
+        },
+        {
+          "name": "CURL - Documento Completo",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": ""
+            },
+            "description": "```bash\ncurl -X POST \"{{endpoint}}/{{proxy-path}}/deployments/{{deployment-id}}/chat/completions?api-version={{api-version}}\" \\\n  -H \"Content-Type: application/json\" \\\n  -H \"api-key: {{api-key}}\" \\\n  -d '{\n    \"messages\": [\n        {\n            \"role\": \"system\",\n            \"content\": \"Você é um especialista em documentação técnica e de requisitos de software. Você deve consolidar todas as informações em um documento completo e coeso.\"\n        },\n        {\n            \"role\": \"user\",\n            \"content\": \"Consolide as seguintes informações em um documento completo de requisitos para o sistema {{nome_sistema}}:\\n\\nREQUISITOS:\\n{{documento_requisitos}}\\n\\nCASOS DE USO:\\n{{casos_de_uso}}\\n\\nCENÁRIOS DE TESTE:\\n{{cenarios_teste}}\\n\\nEQUIPES E APLICAÇÕES ENVOLVIDAS:\\n{{equipes_aplicacoes}}\"\n        }\n    ],\n    \"temperature\": 0.7,\n    \"top_p\": 0.95,\n    \"max_tokens\": 4000,\n    \"stream\": false\n}'\n```"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "nome_sistema",
+      "value": "Seu Sistema",
+      "type": "string"
+    },
+    {
+      "key": "pontos_importantes",
+      "value": "Liste aqui os pontos importantes que o sistema deve atender",
+      "type": "string"
+    }
+  ]
+} 

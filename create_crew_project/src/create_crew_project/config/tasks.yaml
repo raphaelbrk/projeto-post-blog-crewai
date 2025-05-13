@@ -1,0 +1,27 @@
+definir_requisitos:
+  description: >
+    Identificar as funcionalidades necessárias para o sistema e documentar os requisitos.
+  expected_output: >
+    Documento de requisitos detalhado, alinhado com as expectativas do projeto.
+  agent: product_owner
+
+especificar_agentes:
+  description: >
+    Definir os agentes no agents.yaml, incluindo seus papéis e permissões.
+  expected_output: >
+    Arquivo agents.yaml completo, com agentes especificados e documentados.
+  agent: desenvolvedor_de_agentes
+
+definir_tarefas:
+  description: >
+    Criar o tasks.yaml, descrevendo as ações necessárias para cada etapa do sistema.
+  expected_output: >
+    Arquivo tasks.yaml estruturado com tasks claras e detalhadas.
+  agent: desenvolvedor_de_tarefas
+
+orquestrar_sistema:
+  description: >
+    Implementar o crew.py conectando agentes e tasks, configurando a lógica de execução.
+  expected_output: >
+    Arquivo crew.py funcional, com integração completa entre agentes e tarefas.
+  agent: desenvolvedor_de_orquestracao
