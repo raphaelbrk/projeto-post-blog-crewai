@@ -1,24 +1,29 @@
 {
   "info": {
     "_postman_id": "b3c5d1a2-f8e0-4e3a-b0f2-ec5a8f6e2b1d",
-    "name": "Documentação de Requisitos - Azure OpenAI",
-    "description": "Collection para gerar documentação de requisitos detalhada usando a API do Azure OpenAI",
+    "name": "Documentação de Requisitos - Fluxo Sequencial",
+    "description": "Collection para gerar documentação de requisitos detalhada usando transcrições do Teams e um fluxo de trabalho sequencial onde cada agente depende do resultado do anterior. O documento final gerado na última etapa é o entregável completo.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
     {
-      "name": "Documentação de Requisitos",
+      "name": "1. Transcrição e Preparação",
       "item": [
         {
-          "name": "Gerar Documento de Requisitos",
+          "name": "1.1 Processar Transcrição do Teams",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer-token}}",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "POST",
             "header": [
-              {
-                "key": "api-key",
-                "value": "{{api-key}}",
-                "type": "text"
-              },
               {
                 "key": "Content-Type",
                 "value": "application/json",
@@ -27,7 +32,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"messages\": [\n        {\n            \"role\": \"system\",\n            \"content\": \"Você é um especialista em análise de requisitos e documentação de software. Você deve gerar um documento de requisitos detalhado para um sistema, seguindo as melhores práticas de engenharia de software.\"\n        },\n        {\n            \"role\": \"user\",\n            \"content\": \"Preciso de um documento de requisitos detalhado para o sistema {{nome_sistema}}. O sistema deve atender aos seguintes pontos importantes: {{pontos_importantes}}.\"\n        }\n    ],\n    \"temperature\": 0.7,\n    \"top_p\": 0.95,\n    \"max_tokens\": 4000,\n    \"stream\": false\n}"
+              "raw": "{\n    \"messages\": [\n        {\n            \"role\": \"system\",\n            \"content\": \"Você é um especialista em análise de requisitos. Sua tarefa é analisar a transcrição de uma reunião do Microsoft Teams e extrair os pontos importantes para a criação de um documento de requisitos. Foque em identificar requisitos funcionais, não-funcionais, restrições, expectativas dos stakeholders e quaisquer outras informações relevantes para o desenvolvimento do sistema.\"\n        },\n        {\n            \"role\": \"user\",\n            \"content\": \"A seguir está a transcrição de uma reunião do Teams onde discutimos os requisitos para o sistema {{nome_sistema}}. Por favor, analise e extraia todos os pontos importantes:\\n\\n{{transcricao-teams}}\"\n        }\n    ],\n    \"temperature\": 0.7,\n    \"top_p\": 0.95,\n    \"max_tokens\": 4000,\n    \"stream\": false\n}"
             },
             "url": {
               "raw": "{{endpoint}}/{{proxy-path}}/deployments/{{deployment-id}}/chat/completions?api-version={{api-version}}",
@@ -48,20 +53,79 @@
                 }
               ]
             },
-            "description": "Gera um documento de requisitos detalhado com base nos pontos importantes do sistema."
+            "description": "ETAPA 1: Processa a transcrição de uma reunião do Teams para extrair pontos importantes. Copie o resultado para usar na próxima etapa."
+          },
+          "response": []
+        }
+      ],
+      "description": "Fase inicial: Processamento de transcrições do Teams para extração dos pontos principais que serão usados nas próximas etapas."
+    },
+    {
+      "name": "2. Documentação de Requisitos",
+      "item": [
+        {
+          "name": "2.1 Gerar Documento de Requisitos",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer-token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"messages\": [\n        {\n            \"role\": \"system\",\n            \"content\": \"Você é um especialista em análise de requisitos e documentação de software. Você deve gerar um documento de requisitos detalhado para um sistema, seguindo as melhores práticas de engenharia de software.\"\n        },\n        {\n            \"role\": \"user\",\n            \"content\": \"Preciso de um documento de requisitos detalhado para o sistema {{nome_sistema}} baseado na análise da transcrição da reunião a seguir. Os principais pontos identificados foram: {{pontos_importantes}}\\n\\nTranscrição analisada:\\n{{transcricao-teams}}\"\n        }\n    ],\n    \"temperature\": 0.7,\n    \"top_p\": 0.95,\n    \"max_tokens\": 4000,\n    \"stream\": false\n}"
+            },
+            "url": {
+              "raw": "{{endpoint}}/{{proxy-path}}/deployments/{{deployment-id}}/chat/completions?api-version={{api-version}}",
+              "host": [
+                "{{endpoint}}"
+              ],
+              "path": [
+                "{{proxy-path}}",
+                "deployments",
+                "{{deployment-id}}",
+                "chat",
+                "completions"
+              ],
+              "query": [
+                {
+                  "key": "api-version",
+                  "value": "{{api-version}}"
+                }
+              ]
+            },
+            "description": "ETAPA 2: Gera um documento de requisitos baseado na transcrição. OBRIGATÓRIO: Copie o resultado para a variável 'documento_requisitos'."
           },
           "response": []
         },
         {
-          "name": "Gerar Casos de Uso",
+          "name": "2.2 Gerar Casos de Uso",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer-token}}",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "POST",
             "header": [
-              {
-                "key": "api-key",
-                "value": "{{api-key}}",
-                "type": "text"
-              },
               {
                 "key": "Content-Type",
                 "value": "application/json",
@@ -91,20 +155,25 @@
                 }
               ]
             },
-            "description": "Gera casos de uso detalhados com base no documento de requisitos."
+            "description": "ETAPA 3: Gera casos de uso com base no documento de requisitos. OBRIGATÓRIO: Copie o resultado para a variável 'casos_de_uso'."
           },
           "response": []
         },
         {
-          "name": "Gerar Cenários de Teste",
+          "name": "2.3 Gerar Cenários de Teste",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer-token}}",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "POST",
             "header": [
-              {
-                "key": "api-key",
-                "value": "{{api-key}}",
-                "type": "text"
-              },
               {
                 "key": "Content-Type",
                 "value": "application/json",
@@ -134,20 +203,25 @@
                 }
               ]
             },
-            "description": "Gera cenários de teste detalhados com base nos casos de uso e requisitos."
+            "description": "ETAPA 4: Gera cenários de teste com base nos requisitos e casos de uso. OBRIGATÓRIO: Copie o resultado para a variável 'cenarios_teste'."
           },
           "response": []
         },
         {
-          "name": "Identificar Equipes e Aplicações Envolvidas",
+          "name": "2.4 Identificar Equipes e Aplicações Envolvidas",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer-token}}",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "POST",
             "header": [
-              {
-                "key": "api-key",
-                "value": "{{api-key}}",
-                "type": "text"
-              },
               {
                 "key": "Content-Type",
                 "value": "application/json",
@@ -156,7 +230,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"messages\": [\n        {\n            \"role\": \"system\",\n            \"content\": \"Você é um especialista em análise organizacional e mapeamento de sistemas. Você deve identificar todas as equipes e aplicações envolvidas em um projeto de software.\"\n        },\n        {\n            \"role\": \"user\",\n            \"content\": \"Baseado no seguinte documento de requisitos e casos de uso, identifique todas as equipes e aplicações que estarão envolvidas no sistema {{nome_sistema}}:\\n\\n{{documento_requisitos}}\\n\\n{{casos_de_uso}}\"\n        }\n    ],\n    \"temperature\": 0.7,\n    \"top_p\": 0.95,\n    \"max_tokens\": 4000,\n    \"stream\": false\n}"
+              "raw": "{\n    \"messages\": [\n        {\n            \"role\": \"system\",\n            \"content\": \"Você é um especialista em análise organizacional e mapeamento de sistemas. Você deve identificar todas as equipes e aplicações envolvidas em um projeto de software.\"\n        },\n        {\n            \"role\": \"user\",\n            \"content\": \"Baseado no seguinte documento de requisitos, casos de uso e transcrição da reunião, identifique todas as equipes e aplicações que estarão envolvidas no sistema {{nome_sistema}}:\\n\\n{{documento_requisitos}}\\n\\n{{casos_de_uso}}\\n\\n{{transcricao-teams}}\"\n        }\n    ],\n    \"temperature\": 0.7,\n    \"top_p\": 0.95,\n    \"max_tokens\": 4000,\n    \"stream\": false\n}"
             },
             "url": {
               "raw": "{{endpoint}}/{{proxy-path}}/deployments/{{deployment-id}}/chat/completions?api-version={{api-version}}",
@@ -177,20 +251,25 @@
                 }
               ]
             },
-            "description": "Identifica todas as equipes e aplicações envolvidas no sistema."
+            "description": "ETAPA 5: Identifica equipes e aplicações envolvidas. OBRIGATÓRIO: Copie o resultado para a variável 'equipes_aplicacoes'."
           },
           "response": []
         },
         {
-          "name": "Gerar Documento Completo",
+          "name": "2.5 Gerar Documento Completo [FINAL]",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer-token}}",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "POST",
             "header": [
-              {
-                "key": "api-key",
-                "value": "{{api-key}}",
-                "type": "text"
-              },
               {
                 "key": "Content-Type",
                 "value": "application/json",
@@ -199,7 +278,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"messages\": [\n        {\n            \"role\": \"system\",\n            \"content\": \"Você é um especialista em documentação técnica e de requisitos de software. Você deve consolidar todas as informações em um documento completo e coeso.\"\n        },\n        {\n            \"role\": \"user\",\n            \"content\": \"Consolide as seguintes informações em um documento completo de requisitos para o sistema {{nome_sistema}}:\\n\\nREQUISITOS:\\n{{documento_requisitos}}\\n\\nCASOS DE USO:\\n{{casos_de_uso}}\\n\\nCENÁRIOS DE TESTE:\\n{{cenarios_teste}}\\n\\nEQUIPES E APLICAÇÕES ENVOLVIDAS:\\n{{equipes_aplicacoes}}\"\n        }\n    ],\n    \"temperature\": 0.7,\n    \"top_p\": 0.95,\n    \"max_tokens\": 4000,\n    \"stream\": false\n}"
+              "raw": "{\n    \"messages\": [\n        {\n            \"role\": \"system\",\n            \"content\": \"Você é um especialista em documentação técnica e de requisitos de software. Você deve consolidar todas as informações em um documento completo e coeso.\"\n        },\n        {\n            \"role\": \"user\",\n            \"content\": \"Consolide as seguintes informações em um documento completo de requisitos para o sistema {{nome_sistema}}:\\n\\nTRANSCRIÇÃO ORIGINAL:\\n{{transcricao-teams}}\\n\\nREQUISITOS:\\n{{documento_requisitos}}\\n\\nCASOS DE USO:\\n{{casos_de_uso}}\\n\\nCENÁRIOS DE TESTE:\\n{{cenarios_teste}}\\n\\nEQUIPES E APLICAÇÕES ENVOLVIDAS:\\n{{equipes_aplicacoes}}\"\n        }\n    ],\n    \"temperature\": 0.7,\n    \"top_p\": 0.95,\n    \"max_tokens\": 4000,\n    \"stream\": false\n}"
             },
             "url": {
               "raw": "{{endpoint}}/{{proxy-path}}/deployments/{{deployment-id}}/chat/completions?api-version={{api-version}}",
@@ -220,61 +299,73 @@
                 }
               ]
             },
-            "description": "Consolida todas as informações em um documento completo de requisitos."
+            "description": "ETAPA FINAL: Consolida todas as informações em um documento completo. Este é o resultado final do processo sequencial e contém toda a documentação necessária para o projeto."
           },
           "response": []
         }
       ],
-      "description": "Conjunto de requisições para gerar documentação de requisitos detalhada."
+      "description": "Série de requisições sequenciais que geram a documentação completa. Execute na ordem numérica e copie os resultados entre as etapas conforme instruído."
     },
     {
-      "name": "CURL Examples",
+      "name": "3. CURL Examples",
       "item": [
         {
-          "name": "CURL - Gerar Documento de Requisitos",
+          "name": "3.1 CURL - Processar Transcrição",
           "request": {
             "method": "GET",
             "header": [],
             "url": {
               "raw": ""
             },
-            "description": "```bash\ncurl -X POST \"{{endpoint}}/{{proxy-path}}/deployments/{{deployment-id}}/chat/completions?api-version={{api-version}}\" \\\n  -H \"Content-Type: application/json\" \\\n  -H \"api-key: {{api-key}}\" \\\n  -d '{\n    \"messages\": [\n        {\n            \"role\": \"system\",\n            \"content\": \"Você é um especialista em análise de requisitos e documentação de software. Você deve gerar um documento de requisitos detalhado para um sistema, seguindo as melhores práticas de engenharia de software.\"\n        },\n        {\n            \"role\": \"user\",\n            \"content\": \"Preciso de um documento de requisitos detalhado para o sistema {{nome_sistema}}. O sistema deve atender aos seguintes pontos importantes: {{pontos_importantes}}.\"\n        }\n    ],\n    \"temperature\": 0.7,\n    \"top_p\": 0.95,\n    \"max_tokens\": 4000,\n    \"stream\": false\n}'\n```"
+            "description": "```bash\ncurl -X POST \"{{endpoint}}/{{proxy-path}}/deployments/{{deployment-id}}/chat/completions?api-version={{api-version}}\" \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Authorization: Bearer {{bearer-token}}\" \\\n  -d '{\n    \"messages\": [\n        {\n            \"role\": \"system\",\n            \"content\": \"Você é um especialista em análise de requisitos. Sua tarefa é analisar a transcrição de uma reunião do Microsoft Teams e extrair os pontos importantes para a criação de um documento de requisitos.\"\n        },\n        {\n            \"role\": \"user\",\n            \"content\": \"A seguir está a transcrição de uma reunião do Teams onde discutimos os requisitos para o sistema {{nome_sistema}}. Por favor, analise e extraia todos os pontos importantes:\\n\\n{{transcricao-teams}}\"\n        }\n    ],\n    \"temperature\": 0.7,\n    \"top_p\": 0.95,\n    \"max_tokens\": 4000,\n    \"stream\": false\n}'\n```"
           },
           "response": []
         },
         {
-          "name": "CURL - Gerar Casos de Uso",
+          "name": "3.2 CURL - Gerar Documento de Requisitos",
           "request": {
             "method": "GET",
             "header": [],
             "url": {
               "raw": ""
             },
-            "description": "```bash\ncurl -X POST \"{{endpoint}}/{{proxy-path}}/deployments/{{deployment-id}}/chat/completions?api-version={{api-version}}\" \\\n  -H \"Content-Type: application/json\" \\\n  -H \"api-key: {{api-key}}\" \\\n  -d '{\n    \"messages\": [\n        {\n            \"role\": \"system\",\n            \"content\": \"Você é um especialista em análise de requisitos e documentação de software. Você deve gerar casos de uso detalhados para um sistema, seguindo as melhores práticas de engenharia de software.\"\n        },\n        {\n            \"role\": \"user\",\n            \"content\": \"Baseado no seguinte documento de requisitos, gere casos de uso detalhados para o sistema {{nome_sistema}}:\\n\\n{{documento_requisitos}}\"\n        }\n    ],\n    \"temperature\": 0.7,\n    \"top_p\": 0.95,\n    \"max_tokens\": 4000,\n    \"stream\": false\n}'\n```"
+            "description": "```bash\ncurl -X POST \"{{endpoint}}/{{proxy-path}}/deployments/{{deployment-id}}/chat/completions?api-version={{api-version}}\" \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Authorization: Bearer {{bearer-token}}\" \\\n  -d '{\n    \"messages\": [\n        {\n            \"role\": \"system\",\n            \"content\": \"Você é um especialista em análise de requisitos e documentação de software. Você deve gerar um documento de requisitos detalhado para um sistema, seguindo as melhores práticas de engenharia de software.\"\n        },\n        {\n            \"role\": \"user\",\n            \"content\": \"Preciso de um documento de requisitos detalhado para o sistema {{nome_sistema}} baseado na análise da transcrição da reunião a seguir. Os principais pontos identificados foram: {{pontos_importantes}}\\n\\nTranscrição analisada:\\n{{transcricao-teams}}\"\n        }\n    ],\n    \"temperature\": 0.7,\n    \"top_p\": 0.95,\n    \"max_tokens\": 4000,\n    \"stream\": false\n}'\n```"
           },
           "response": []
         },
         {
-          "name": "CURL - Gerar Cenários de Teste",
+          "name": "3.3 CURL - Gerar Casos de Uso",
           "request": {
             "method": "GET",
             "header": [],
             "url": {
               "raw": ""
             },
-            "description": "```bash\ncurl -X POST \"{{endpoint}}/{{proxy-path}}/deployments/{{deployment-id}}/chat/completions?api-version={{api-version}}\" \\\n  -H \"Content-Type: application/json\" \\\n  -H \"api-key: {{api-key}}\" \\\n  -d '{\n    \"messages\": [\n        {\n            \"role\": \"system\",\n            \"content\": \"Você é um especialista em testes de software. Você deve gerar cenários de teste detalhados para um sistema, seguindo as melhores práticas de engenharia de software.\"\n        },\n        {\n            \"role\": \"user\",\n            \"content\": \"Baseado nos seguintes casos de uso e requisitos, gere cenários de teste detalhados para o sistema {{nome_sistema}}:\\n\\n{{casos_de_uso}}\\n\\n{{documento_requisitos}}\"\n        }\n    ],\n    \"temperature\": 0.7,\n    \"top_p\": 0.95,\n    \"max_tokens\": 4000,\n    \"stream\": false\n}'\n```"
+            "description": "```bash\ncurl -X POST \"{{endpoint}}/{{proxy-path}}/deployments/{{deployment-id}}/chat/completions?api-version={{api-version}}\" \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Authorization: Bearer {{bearer-token}}\" \\\n  -d '{\n    \"messages\": [\n        {\n            \"role\": \"system\",\n            \"content\": \"Você é um especialista em análise de requisitos e documentação de software. Você deve gerar casos de uso detalhados para um sistema, seguindo as melhores práticas de engenharia de software.\"\n        },\n        {\n            \"role\": \"user\",\n            \"content\": \"Baseado no seguinte documento de requisitos, gere casos de uso detalhados para o sistema {{nome_sistema}}:\\n\\n{{documento_requisitos}}\"\n        }\n    ],\n    \"temperature\": 0.7,\n    \"top_p\": 0.95,\n    \"max_tokens\": 4000,\n    \"stream\": false\n}'\n```"
           },
           "response": []
         },
         {
-          "name": "CURL - Documento Completo",
+          "name": "3.4 CURL - Gerar Cenários de Teste",
           "request": {
             "method": "GET",
             "header": [],
             "url": {
               "raw": ""
             },
-            "description": "```bash\ncurl -X POST \"{{endpoint}}/{{proxy-path}}/deployments/{{deployment-id}}/chat/completions?api-version={{api-version}}\" \\\n  -H \"Content-Type: application/json\" \\\n  -H \"api-key: {{api-key}}\" \\\n  -d '{\n    \"messages\": [\n        {\n            \"role\": \"system\",\n            \"content\": \"Você é um especialista em documentação técnica e de requisitos de software. Você deve consolidar todas as informações em um documento completo e coeso.\"\n        },\n        {\n            \"role\": \"user\",\n            \"content\": \"Consolide as seguintes informações em um documento completo de requisitos para o sistema {{nome_sistema}}:\\n\\nREQUISITOS:\\n{{documento_requisitos}}\\n\\nCASOS DE USO:\\n{{casos_de_uso}}\\n\\nCENÁRIOS DE TESTE:\\n{{cenarios_teste}}\\n\\nEQUIPES E APLICAÇÕES ENVOLVIDAS:\\n{{equipes_aplicacoes}}\"\n        }\n    ],\n    \"temperature\": 0.7,\n    \"top_p\": 0.95,\n    \"max_tokens\": 4000,\n    \"stream\": false\n}'\n```"
+            "description": "```bash\ncurl -X POST \"{{endpoint}}/{{proxy-path}}/deployments/{{deployment-id}}/chat/completions?api-version={{api-version}}\" \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Authorization: Bearer {{bearer-token}}\" \\\n  -d '{\n    \"messages\": [\n        {\n            \"role\": \"system\",\n            \"content\": \"Você é um especialista em testes de software. Você deve gerar cenários de teste detalhados para um sistema, seguindo as melhores práticas de engenharia de software.\"\n        },\n        {\n            \"role\": \"user\",\n            \"content\": \"Baseado nos seguintes casos de uso e requisitos, gere cenários de teste detalhados para o sistema {{nome_sistema}}:\\n\\n{{casos_de_uso}}\\n\\n{{documento_requisitos}}\"\n        }\n    ],\n    \"temperature\": 0.7,\n    \"top_p\": 0.95,\n    \"max_tokens\": 4000,\n    \"stream\": false\n}'\n```"
+          },
+          "response": []
+        },
+        {
+          "name": "3.5 CURL - Documento Completo [FINAL]",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": ""
+            },
+            "description": "```bash\ncurl -X POST \"{{endpoint}}/{{proxy-path}}/deployments/{{deployment-id}}/chat/completions?api-version={{api-version}}\" \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Authorization: Bearer {{bearer-token}}\" \\\n  -d '{\n    \"messages\": [\n        {\n            \"role\": \"system\",\n            \"content\": \"Você é um especialista em documentação técnica e de requisitos de software. Você deve consolidar todas as informações em um documento completo e coeso.\"\n        },\n        {\n            \"role\": \"user\",\n            \"content\": \"Consolide as seguintes informações em um documento completo de requisitos para o sistema {{nome_sistema}}:\\n\\nTRANSCRIÇÃO ORIGINAL:\\n{{transcricao-teams}}\\n\\nREQUISITOS:\\n{{documento_requisitos}}\\n\\nCASOS DE USO:\\n{{casos_de_uso}}\\n\\nCENÁRIOS DE TESTE:\\n{{cenarios_teste}}\\n\\nEQUIPES E APLICAÇÕES ENVOLVIDAS:\\n{{equipes_aplicacoes}}\"\n        }\n    ],\n    \"temperature\": 0.7,\n    \"top_p\": 0.95,\n    \"max_tokens\": 4000,\n    \"stream\": false\n}'\n```"
           },
           "response": []
         }

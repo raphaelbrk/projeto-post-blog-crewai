@@ -15,6 +15,12 @@
       "enabled": true
     },
     {
+      "key": "bearer-token",
+      "value": "seu-token-jwt-aqui",
+      "type": "secret",
+      "enabled": true
+    },
+    {
       "key": "api-version",
       "value": "2024-02-15-preview",
       "type": "default",
@@ -29,6 +35,12 @@
     {
       "key": "proxy-path",
       "value": "PROXY",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "transcricao-teams",
+      "value": "",
       "type": "default",
       "enabled": true
     },
